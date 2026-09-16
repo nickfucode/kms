@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application' version '8.2.2'
+    id 'com.android.application'
 }
 
 android {
@@ -28,13 +28,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-    
-    // Disable strict AndroidX check for Gradle 8.7+
-    packagingOptions {
-        jniLibs {
-            useLegacyPackaging true
-        }
-    }
 }
 
 repositories {
@@ -42,7 +35,3 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.webkit:webkit:1.9.0'
-}
