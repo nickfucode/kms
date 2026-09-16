@@ -5,11 +5,6 @@ plugins {
 android {
     namespace 'com.busapp'
     compileSdk 34
-    
-    // Explicitly enable AndroidX to avoid Gradle 8.7+ strict check
-    buildFeatures {
-        // Empty block satisfies Gradle requirements
-    }
 
     defaultConfig {
         applicationId "com.busapp"
