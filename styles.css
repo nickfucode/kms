@@ -1,0 +1,737 @@
+:root {
+  --primary: #4f46e5;
+  --primary-dark: #4338ca;
+  --surface: #ffffff;
+  --background: #f4f5fb;
+  --text: #1a1a2e;
+  --text-muted: #7c7c93;
+  --border: #e2e2ee;
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei",
+    system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #dfe1ec;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 手機外框：桌機上模擬裝置，手機上撐滿全螢幕 */
+.phone {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 100dvh;
+  max-height: 820px;
+  background: var(--background);
+  overflow: hidden;
+  display: flex;
+}
+
+@media (min-width: 480px) and (min-height: 700px) {
+  .phone {
+    height: 820px;
+    border-radius: 34px;
+    box-shadow: 0 24px 60px rgba(20, 20, 50, 0.28);
+  }
+}
+
+/* 畫面切換 */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(24px);
+  transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s;
+}
+
+.screen--active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.screen--leaving {
+  transform: translateX(-24px);
+}
+
+/* ---------- 登入畫面 ---------- */
+.login-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 34px;
+  padding: 40px 28px 24px;
+  overflow-y: auto;
+}
+
+.brand {
+  text-align: center;
+}
+
+.brand-logo {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 18px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--primary), #7c6cf0);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px rgba(79, 70, 229, 0.35);
+}
+
+.brand-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.brand-subtitle {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.field-input {
+  width: 100%;
+  height: 50px;
+  padding: 0 16px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.field-input::placeholder {
+  color: #b4b4c6;
+}
+
+.field-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+}
+
+.field-password {
+  position: relative;
+  display: flex;
+}
+
+.field-password .field-input {
+  padding-right: 50px;
+}
+
+.eye {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.eye:active {
+  background: var(--background);
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.remember input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.btn-primary {
+  height: 52px;
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: inherit;
+  color: #fff;
+  background: var(--primary);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.btn-primary:active {
+  transform: scale(0.985);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}
+
+.link-forgot {
+  align-self: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.link-forgot:hover {
+  color: var(--primary);
+}
+
+.login-footer {
+  padding: 18px 28px 30px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.link-inline {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ---------- 歡迎畫面 ---------- */
+#screen-welcome {
+  background: var(--background);
+}
+
+.welcome-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 44px 24px 22px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.welcome-avatar {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), #7c6cf0);
+  color: #fff;
+  font-size: 21px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+.welcome-hello {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.welcome-name {
+  margin-top: 3px;
+  font-size: 20px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.welcome-body {
+  flex: 1;
+  padding: 22px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.hero-card {
+  padding: 24px 22px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--primary), #8b7cf5);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(79, 70, 229, 0.28);
+}
+
+.hero-title {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.hero-text {
+  margin-top: 8px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  opacity: 0.92;
+}
+
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.tile {
+  padding: 20px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.tile:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 14px rgba(20, 20, 50, 0.1);
+}
+
+.tile-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile-icon--blue { background: #e6efff; }
+.tile-icon--green { background: #e2f7ec; }
+.tile-icon--amber { background: #fff3dc; }
+.tile-icon--pink { background: #fde8f1; }
+
+.tile-label {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.welcome-footer {
+  padding: 16px 24px 30px;
+}
+
+.btn-secondary {
+  width: 100%;
+  height: 50px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--primary);
+  background: var(--surface);
+  border: 1.5px solid var(--primary);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.btn-secondary:active {
+  background: #eef0ff;
+}
+
+/* ---------- 巴士到站查詢畫面 ---------- */
+#screen-bus {
+  background: var(--background);
+}
+
+.bus-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 40px 16px 14px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  background: none;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.icon-btn:active {
+  background: var(--background);
+}
+
+.bus-title {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.bus-query {
+  padding: 14px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bus-query-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.field--grow {
+  flex: 1;
+}
+
+.field--route {
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.segmented {
+  display: flex;
+  height: 50px;
+  padding: 4px;
+  background: var(--background);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.seg {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+
+.seg--active {
+  color: #fff;
+  background: var(--primary);
+}
+
+.bus-status {
+  padding: 14px 20px 0;
+  font-size: 14px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.bus-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 到站資訊卡 */
+.eta-card {
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(20, 20, 50, 0.07);
+}
+
+.eta-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.eta-dest {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.eta-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.eta-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 2px;
+}
+
+.eta-item + .eta-item {
+  border-top: 1px dashed var(--border);
+}
+
+.eta-time {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.eta-min {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-left: 8px;
+}
+
+.eta-rmk {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.eta-empty {
+  padding: 14px 2px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* 站點清單 */
+.stop-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stop-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.stop-row .eta-card {
+  margin-top: 8px;
+}
+
+.stop-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  text-align: left;
+  font-family: inherit;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.stop-item:active {
+  background: #f7f7fd;
+}
+
+.stop-item--selected {
+  border-color: var(--primary);
+  background: #eef0ff;
+}
+
+.stop-seq {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--background);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stop-item--selected .stop-seq {
+  background: var(--primary);
+  color: #fff;
+}
+
+.stop-name {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.stop-name--loading {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* 常用站點 */
+.stop-line {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.stop-fav {
+  width: 50px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c2c2d2;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+}
+
+.stop-fav--active {
+  color: #f59e0b;
+  border-color: #f59e0b;
+  background: #fff8ea;
+}
+
+.stop-fav--active svg {
+  fill: currentColor;
+}
+
+.fav-route {
+  min-width: 46px;
+  padding: 5px 8px;
+  border-radius: 9px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* 巴士公司選擇器 */
+.segmented--company {
+  height: 50px;
+  width: 80px;
+}
+
+.segmented--company .seg {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* 常用站點 ETA 時間 */
+.fav-eta {
+  display: block;
+  margin-top: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.fav-eta--empty {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* 公司標籤 */
+.fav-company {
+  display: inline-block;
+  min-width: 20px;
+  padding: 2px 5px;
+  margin-right: 4px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.fav-company--kmb {
+  background: #e6efff;
+  color: #2563eb;
+}
+
+.fav-company--ctb {
+  background: #fce7f3;
+  color: #db2777;
+}
+
+.fav-empty {
+  padding: 10px 4px;
+  font-size: 14px;
+  color: var(--text-muted);
+  text-align: center;
+}
