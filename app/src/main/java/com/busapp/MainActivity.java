@@ -20,10 +20,6 @@ public class MainActivity extends Activity {
 
         // Full-screen immersive
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES,
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-        );
 
         webView = new WebView(this);
         setContentView(webView);
