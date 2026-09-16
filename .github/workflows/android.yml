@@ -9,12 +9,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    outputs:
+      apk-path: android-app/build/outputs/apk/debug/*.apk
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Copy web assets
         run: |
+          mkdir -p android-app/src/main/assets
           cp index.html android-app/src/main/assets/
           cp styles.css  android-app/src/main/assets/
           cp app.js      android-app/src/main/assets/
@@ -30,9 +33,14 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.5'
+        id: setup
 
       - name: Build debug APK
-        run: gradle assembleDebug
+        run: |
+          chmod +x gradlew || true
+          if [ -f gradlew ]; then ./gradlew assembleDebug; else gradle assembleDebug; fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
