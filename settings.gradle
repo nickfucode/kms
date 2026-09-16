@@ -6,4 +6,13 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'busapp'
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "kmb-bus"
+include ':app'
+project(':app').projectDir = file('android-app')
