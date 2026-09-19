@@ -879,6 +879,68 @@ body {
   font-size: 14px;
 }
 
+/* ===== 歡迎頁面 - 未來活動卡片 ===== */
+.upcoming-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #fff;
+  text-align: left;
+}
+
+.upcoming-events {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.upcoming-event-card {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 10px;
+  padding: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.upcoming-event-card:hover {
+  transform: translateX(4px);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.event-header-mini {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.mini-icon {
+  font-size: 18px;
+}
+
+.mini-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.mini-date {
+  font-size: 13px;
+  margin: 0;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.loading-events,
+.no-upcoming {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  text-align: center;
+  padding: 20px;
+}
+
 /* ===== 月曆樣式 ===== */
 .calendar-header {
   display: flex;

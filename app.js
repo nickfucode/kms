@@ -53,6 +53,11 @@ loginForm.addEventListener('submit', (event) => {
     welcomeAvatar.textContent = name.charAt(0);
     console.log('Switching to welcome screen');
     showScreen(welcomeScreen, loginScreen);
+    
+    // 登入後渲染未來活動
+    setTimeout(() => {
+      renderUpcomingEvents();
+    }, 100);
   } catch (err) {
     console.error('Login error:', err);
     alert('登入時發生錯誤：' + err.message);
@@ -71,6 +76,52 @@ togglePassword.addEventListener('click', () => {
   togglePassword.setAttribute('aria-pressed', String(!showing));
   togglePassword.setAttribute('aria-label', showing ? '顯示密碼' : '隱藏密碼');
 });
+
+// 渲染未來 3 個活動到歡迎頁面
+function renderUpcomingEvents() {
+  const container = document.getElementById('upcoming-events-list');
+  if (!container) return;
+  
+  const events = getNextThreeEvents();
+  
+  if (events.length === 0) {
+    container.innerHTML = '<p class="no-upcoming">暫時沒有即將到來的事項。</p>';
+    return;
+  }
+  
+  let html = '';
+  events.forEach((event, index) => {
+    const typeColor = getEventColor(event.type);
+    const icon = getEventIcon(event.type);
+    const isRange = !!event.range;
+    const startDate = isRange ? event.range[0] : event.date;
+    const endDate = isRange ? event.range[1] : event.date;
+    
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    const dateStr = isRange 
+      ? `${formatDate(start.toISOString().split('T')[0])} - ${formatDate(end.toISOString().split('T')[0])}`
+      : formatDate(end.toISOString().split('T')[0]);
+    
+    html += `
+      <div class="upcoming-event-card" style="border-left: 3px solid ${typeColor};">
+        <div class="event-header-mini">
+          <span class="mini-icon">${icon}</span>
+          <h4 class="mini-title">${event.title}</h4>
+        </div>
+        <p class="mini-date" style="color: ${typeColor};">📅 ${dateStr}</p>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+function formatDate(dateStr) {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return `${month}/${day}`;
+}
 
 /* ===== 巴士到站查詢 ===== */
 
@@ -704,6 +755,35 @@ if (today < firstEventDate) {
   currentMonth = today;
 }
 
+// 獲取未來 3 個活動
+function getNextThreeEvents() {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  
+  return CALENDAR_EVENTS
+    .filter(event => {
+      if (event.range) {
+        const endDate = new Date(event.range[1]);
+        return endDate >= now;
+      } else {
+        const eventDate = new Date(event.date);
+        return eventDate >= now;
+      }
+    })
+    .sort((a, b) => {
+      if (a.range && b.range) {
+        return new Date(a.range[0]) - new Date(b.range[0]);
+      } else if (a.range) {
+        return new Date(a.range[0]) - new Date(b.date);
+      } else if (b.range) {
+        return new Date(a.date) - new Date(b.range[0]);
+      } else {
+        return new Date(a.date) - new Date(b.date);
+      }
+    })
+    .slice(0, 3);
+}
+
 function renderCalendar() {
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
@@ -930,11 +1010,9 @@ goTodayBtn.addEventListener('click', () => {
 });
 
 showCalendarBtn.addEventListener('click', () => {
-  // 如果尚未初始化或已過期，使用智能計算的月份
-  if (!currentMonth) {
-    currentMonth = new Date();
-  }
-  selectedDate = currentMonth;
+  // 跳转到今天
+  currentMonth = new Date();
+  selectedDate = new Date();
   renderCalendar();
   updateSelectedDateDetails();
   showScreen(calendarScreen, welcomeScreen);
