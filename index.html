@@ -76,6 +76,17 @@
       </header>
 
       <main class="welcome-body">
+        <!-- 日期時間顯示 -->
+        <div class="datetime-card">
+          <div class="datetime-date" id="datetime-date"></div>
+          <div class="datetime-time" id="datetime-time"></div>
+        </div>
+
+        <!-- 行事曆按鈕 -->
+        <button type="button" class="calendar-btn" id="show-calendar">
+          📅 今日行程 & 校曆
+        </button>
+
         <div class="hero-card">
           <p class="hero-title">你今天想做點什麼？</p>
           <p class="hero-text">這是登入後的歡迎畫面原型，所有內容皆為展示用途。</p>
@@ -165,6 +176,23 @@
       <div class="bus-content">
         <p id="fav-empty" class="fav-empty" hidden>還沒有常用站點，到「巴士到站」點星號加入。</p>
         <ul id="fav-list" class="stop-list"></ul>
+      </div>
+    </section>
+
+    <!-- 行事曆彈窗 -->
+    <section id="screen-calendar" class="screen screen--modal">
+      <header class="calendar-header">
+        <button type="button" id="calendar-back" class="icon-btn" aria-label="返回">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+        </button>
+        <h2 class="calendar-title">學校行事曆</h2>
+      </header>
+
+      <div class="calendar-content" id="calendar-list">
+        <!-- 行事曆項目將由 app.js 動態生成 -->
       </div>
     </section>
 

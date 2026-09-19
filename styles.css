@@ -735,3 +735,146 @@ body {
   color: var(--text-muted);
   text-align: center;
 }
+
+/* ===== 日期時間顯示 ===== */
+.datetime-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.35);
+  color: #fff;
+  text-align: center;
+}
+
+.datetime-date {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.datetime-time {
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 行事曆按鈕 */
+.calendar-btn {
+  width: 100%;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border: none;
+  border-radius: var(--radius);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(245, 87, 108, 0.4);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.calendar-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(245, 87, 108, 0.5);
+}
+
+.calendar-btn:active {
+  transform: translateY(0);
+}
+
+/* ===== 行事曆彈窗 ===== */
+.screen--modal {
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.calendar-title {
+  font-size: 20px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.calendar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.calendar-event {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.calendar-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 50px;
+  gap: 4px;
+}
+
+.date-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.date-range {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  text-align: center;
+}
+
+.calendar-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.event-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.event-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.event-note {
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+.no-events {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}

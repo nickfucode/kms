@@ -9,6 +9,12 @@ const togglePassword = document.getElementById('toggle-password');
 const welcomeName = document.getElementById('welcome-name');
 const welcomeAvatar = document.getElementById('welcome-avatar');
 const logoutButton = document.getElementById('logout');
+const datetimeDate = document.getElementById('datetime-date');
+const datetimeTime = document.getElementById('datetime-time');
+const showCalendarBtn = document.getElementById('show-calendar');
+const calendarScreen = document.getElementById('screen-calendar');
+const calendarBack = document.getElementById('calendar-back');
+const calendarList = document.getElementById('calendar-list');
 
 function showScreen(next, current) {
   current.classList.add('screen--leaving');
@@ -91,6 +97,95 @@ const STAR_SVG =
 
 const REFRESH_SVG =
   '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>';
+
+/* ===== 學校行事曆事件 ===== */
+const CALENDAR_EVENTS = [
+  // 九月
+  { date: '2025-09-01', title: '開學禮、第一學段 (第 1-11 周)', type: 'important' },
+  { range: ['2025-09-01', '2025-09-09'], title: '適應週', type: 'period' },
+  { date: '2025-09-19', title: '小一入學資訊日 (升小)', type: 'important' },
+  { date: '2025-09-26', title: '中秋節翌日', type: 'holiday' },
+  { date: '2025-09-30', title: '國慶日升旗禮及慶祝活動', type: 'event' },
+  
+  // 十月
+  { date: '2025-10-01', title: '國慶日', type: 'holiday' },
+  { date: '2025-10-02', title: '防疫針注射 (第 1 針)、全年課外活動開展', type: 'medical' },
+  { date: '2025-10-10', title: '期初家長會、小一自行分配學位申請交學位分配組', type: 'important' },
+  { date: '2025-10-10', subtitle: '(5/10 紙本)・(9/10 電子)', type: 'note' },
+  { date: '2025-10-19', title: '重陽節翌日', type: 'holiday' },
+  { date: '2025-10-23', title: '流感疫苗注射 (第 1 針)', type: 'medical' },
+  
+  // 十一月
+  { range: ['2025-11-05', '2025-11-06'], title: '期初考試 (P6 呈分試)', type: 'exam' },
+  { range: ['2025-11-09', '2025-11-10'], title: '期初考試 (P6 呈分試)', type: 'exam' },
+  { date: '2025-11-13', title: '九東遊戲比賽', type: 'sport' },
+  { date: '2025-11-20', title: '教師發展日 (全日)', type: 'event' },
+  { date: '2025-11-21', title: '第二學段 (第 12-27 周)', type: 'important' },
+  { date: '2025-11-23', title: '更換冬季校服', type: 'notice' },
+  { date: '2025-11-30', title: '小一百日宴', type: 'event' },
+  
+  // 十二月
+  { date: '2025-12-04', title: '戶外學習日', type: 'event' },
+  { date: '2025-12-08', title: '九東田徑比賽', type: 'sport' },
+  { date: '2025-12-12', title: '家長日', type: 'meeting' },
+  { date: '2025-12-14', title: '家長日後補假', type: 'holiday' },
+  { date: '2025-12-15', title: '流感疫苗注射 (第 2 針)', type: 'medical' },
+  { date: '2025-12-22', title: '才藝 (歌唱) 比賽暨聖誕聯歡會', type: 'event' },
+  { range: ['2025-12-23', '2026-01-02'], title: '聖誕及新年假期', type: 'holiday' },
+  
+  // 一月
+  { range: ['2026-01-04', '2026-01-18'], title: 'P6 家長遞交自行選校 (電子平台/紙本)', type: 'important' },
+  { date: '2026-01-23', title: '家教會親子旅行', type: 'event' },
+  { range: ['2026-01-29', '2026-02-01'], title: '全方位學習 (我愛中華文化)', type: 'learning' },
+  
+  // 二月
+  { date: '2026-02-02', title: '教師發展日 (全日)', type: 'event' },
+  { range: ['2026-02-03', '2026-02-13'], title: '農曆新年假期', type: 'holiday' },
+  { range: ['2026-02-25', '2026-02-26'], title: '期中考試 (P6 呈分試)', type: 'exam' },
+  { range: ['2026-03-01', '2026-03-02'], title: '期中考試 (P6 呈分試)', type: 'exam' },
+  
+  // 三月
+  { date: '2026-03-08', title: 'P1 學習成果展、第三學段 (第 28-41 周) 開始', type: 'important' },
+  { range: ['2026-03-15', '2026-03-17'], title: '全方位學習 (樂學與創新)', type: 'learning' },
+  { range: ['2026-03-22', '2026-03-30'], title: '復活節假期', type: 'holiday' },
+  
+  // 四月
+  { date: '2026-04-01', title: 'P1-6 校運會', type: 'sport' },
+  { date: '2026-04-02', title: '校運會後補假、P6 自行分配學位正取生名單', type: 'holiday' },
+  { date: '2026-04-05', title: '清明節', type: 'holiday' },
+  { date: '2026-04-17', title: '家長日', type: 'meeting' },
+  { date: '2026-04-19', title: '家長日後補假', type: 'holiday' },
+  { date: '2026-04-26', title: '更換夏季校服', type: 'notice' },
+  { date: '2026-04-30', title: '26 周年校慶開放日', type: 'event' },
+  
+  // 五月
+  { date: '2026-05-01', title: '勞動節', type: 'holiday' },
+  { date: '2026-05-04', title: 'P3 TSA 視聽及說話評估', type: 'exam', note: '或 5/5' },
+  { date: '2026-05-11', title: 'P5 家長會', type: 'meeting' },
+  { date: '2026-05-13', title: '佛誕', type: 'holiday' },
+  { range: ['2026-05-19', '2026-05-21'], title: 'P6 畢業營', type: 'event' },
+  
+  // 六月
+  { date: '2026-06-02', title: '公佈小一統一派位結果 (電子/郵遞/短訊)', type: 'important' },
+  { range: ['2026-06-03', '2026-06-04'], title: '期末考試 (P5 呈分試)', type: 'exam' },
+  { range: ['2026-06-07', '2026-06-08'], title: '期末考試 (P5 呈分試)', type: 'exam' },
+  { date: '2026-06-09', title: '端午節', type: 'holiday' },
+  { date: '2026-06-10', title: '小一註冊', type: 'important' },
+  { date: '2026-06-14', title: 'P3、P6 TSA 紙筆評估', type: 'exam' },
+  { date: '2026-06-15', title: 'P3、P6 TSA 紙筆評估', type: 'exam' },
+  { date: '2026-06-15', title: '試後學段 (第 42-45 周) 開始', type: 'important' },
+  { date: '2026-06-18', title: '防疫針注射 (第 2 針)', type: 'medical' },
+  { date: '2026-06-26', title: '小一體驗日 (升小)', type: 'important' },
+  
+  // 七月及八月
+  { date: '2026-07-01', title: '香港特別行政區成立紀念日', type: 'holiday' },
+  { date: '2026-07-03', title: 'P6 畢業禮 (一至五年級不用上課)', type: 'event' },
+  { date: '2026-07-06', title: '升中派位公佈', type: 'important' },
+  { date: '2026-07-07', title: '結業禮', type: 'event' },
+  { range: ['2026-07-08', '2026-07-09'], title: '全方位學習日', type: 'learning' },
+  { date: '2026-07-13', title: 'P6 參與 Pre-S1 試', type: 'important' },
+  { range: ['2026-07-12', '2026-08-31'], title: '學生暑假', type: 'holiday' },
+];
 
 let favorites = loadFavorites();
 
@@ -522,3 +617,119 @@ async function openFavorite(fav) {
   const btn = nameEl.closest('.stop-item');
   if (item && btn) selectStop(item, btn);
 }
+
+/* ===== 日期時間 ===== */
+function updateDateTime() {
+  const now = new Date();
+  
+  // 更新日期
+  const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+  const dateStr = now.toLocaleDateString('zh-HK', options);
+  if (datetimeDate) {
+    datetimeDate.textContent = dateStr;
+  }
+  
+  // 更新時間
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const timeStr = `${hours}:${minutes}`;
+  if (datetimeTime) {
+    datetimeTime.textContent = timeStr;
+  }
+}
+
+setInterval(updateDateTime, 1000); // 每秒更新
+updateDateTime(); // 立即執行一次
+
+/* ===== 行事曆 ===== */
+function formatDate(dateStr) {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return `${month}/${day}`;
+}
+
+function getEventIcon(type) {
+  const icons = {
+    important: '🔴',
+    exam: '📝',
+    holiday: '🏖️',
+    event: '🎉',
+    sport: '🏆',
+    medical: '💉',
+    meeting: '👨‍👩‍👧‍👦',
+    learning: '📚',
+    notice: '📢',
+    period: '📅',
+    note: '📌'
+  };
+  return icons[type] || '📌';
+}
+
+function renderCalendarEvents() {
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+  
+  // 篩選今日及將來的活動
+  const upcomingEvents = CALENDAR_EVENTS.filter(event => {
+    if (event.range) {
+      const startDate = new Date(event.range[0]);
+      const endDate = new Date(event.range[1]);
+      return today >= startDate && today <= endDate;
+    } else {
+      const eventDate = new Date(event.date);
+      return today >= eventDate;
+    }
+  }).sort((a, b) => {
+    if (a.range) {
+      return new Date(a.range[0]) - new Date(b.range?.[0] || b.date);
+    }
+    return new Date(a.date) - new Date(b.date);
+  });
+  
+  let html = '';
+  upcomingEvents.forEach(event => {
+    const isRange = !!event.range;
+    const startDate = isRange ? event.range[0] : event.date;
+    const endDate = isRange ? event.range[1] : event.date;
+    const start = new Date(startDate);
+    const end = isRange ? new Date(endDate) : start;
+    
+    const isToday = isRange 
+      ? today >= start && today <= end
+      : today >= start;
+    
+    const titleColor = isToday ? '#ef4444' : '#374151';
+    const bgStyle = isToday ? 'background: #fee2e2;' : '';
+    const borderStyle = isToday ? 'border-left: 4px solid #ef4444;' : 'border-left: 4px solid #6b7280;';
+    
+    html += `
+      <div class="calendar-event" style="${bgStyle} ${borderStyle}">
+        <div class="calendar-date">
+          <span class="date-icon">${getEventIcon(event.type)}</span>
+          <span class="date-range">
+            ${isRange ? `${formatDate(start.toISOString().split('T')[0])}-${formatDate(end.toISOString().split('T')[0])}` : formatDate(end.toISOString().split('T')[0])}
+          </span>
+        </div>
+        <div class="calendar-details">
+          <div class="event-title" style="color: ${titleColor};">${event.title}</div>
+          ${event.subtitle ? `<div class="event-subtitle">${event.subtitle}</div>` : ''}
+          ${event.note ? `<div class="event-note">⚠️ ${event.note}</div>` : ''}
+        </div>
+      </div>
+    `;
+  });
+  
+  if (upcomingEvents.length === 0) {
+    html = '<p class="no-events">沒有更多活動了！</p>';
+  }
+  
+  calendarList.innerHTML = html;
+}
+
+showCalendarBtn.addEventListener('click', () => {
+  renderCalendarEvents();
+  showScreen(calendarScreen, welcomeScreen);
+});
+
+calendarBack.addEventListener('click', () => {
+  showScreen(welcomeScreen, calendarScreen);
+});
