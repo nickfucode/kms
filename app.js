@@ -667,8 +667,24 @@ setInterval(updateDateTime, 1000); // 每秒更新
 updateDateTime(); // 立即執行一次
 
 /* ===== 月曆 ===== */
-let currentMonth = new Date();
+let currentMonth;
 let selectedDate = null;
+
+// 初始化：設置為今天的月份或學年開始月份
+const today = new Date();
+const firstEventDate = new Date(CALENDAR_EVENTS[0].date || CALENDAR_EVENTS[0].range[0]);
+const lastEventDate = new Date(CALENDAR_EVENTS[CALENDAR_EVENTS.length - 1].range[1] || CALENDAR_EVENTS[CALENDAR_EVENTS.length - 1].date);
+
+if (today < firstEventDate) {
+  // 如果今天早於第一個事件，從學年開始
+  currentMonth = firstEventDate;
+} else if (today > lastEventDate) {
+  // 如果今天晚於最後一個事件，設置為最後一個月
+  currentMonth = lastEventDate;
+} else {
+  // 否則使用今天的月份
+  currentMonth = today;
+}
 
 function renderCalendar() {
   const year = currentMonth.getFullYear();
@@ -784,18 +800,27 @@ function createDayCell(day, isEmpty, events = [], isToday = false) {
 }
 
 function getEventsForMonth(year, month) {
-  return CALENDAR_EVENTS.filter(event => {
+  const events = CALENDAR_EVENTS.filter(event => {
     if (event.range) {
       const startDate = new Date(event.range[0]);
       const endDate = new Date(event.range[1]);
-      return (startDate.getFullYear() === year && startDate.getMonth() === month) ||
-             (endDate.getFullYear() === year && endDate.getMonth() === month) ||
-             (startDate < currentMonth && endDate > currentMonth);
+      const inSameYear = (startDate.getFullYear() === year && startDate.getMonth() === month) ||
+             (endDate.getFullYear() === year && endDate.getMonth() === month);
+      const spanning = startDate < currentMonth && endDate > currentMonth;
+      
+      if (inSameYear || spanning) {
+        return true;
+      }
     } else {
       const eventDate = new Date(event.date);
-      return eventDate.getFullYear() === year && eventDate.getMonth() === month;
+      if (eventDate.getFullYear() === year && eventDate.getMonth() === month) {
+        return true;
+      }
     }
+    return false;
   });
+  console.log(`getEventsForMonth(${year}, ${month}): found ${events.length} events`);
+  return events;
 }
 
 function selectDate(day) {
@@ -869,6 +894,7 @@ function getEventColor(type) {
 // calendarScreen, calendarBack 等已宣告在變量初始化區段
 
 prevMonthBtn.addEventListener('click', () => {
+  console.log('Previous month clicked, current:', currentMonth);
   currentMonth.setMonth(currentMonth.getMonth() - 1);
   renderCalendar();
 });
