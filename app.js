@@ -124,6 +124,24 @@ const REFRESH_SVG =
   '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>';
 
 /* ===== 學校行事曆事件 ===== */
+
+function getEventIcon(type) {
+  const icons = {
+    important: '🔴',
+    exam: '📝',
+    holiday: '🏖️',
+    event: '🎉',
+    sport: '🏆',
+    medical: '💉',
+    meeting: '👨‍👩‍👧‍👦',
+    learning: '📚',
+    notice: '📢',
+    period: '📅',
+    note: '📌'
+  };
+  return icons[type] || '📌';
+}
+
 const CALENDAR_EVENTS = [
   // 九月
   { date: '2025-09-01', title: '開學禮、第一學段 (第 1-11 周)', type: 'important' },
