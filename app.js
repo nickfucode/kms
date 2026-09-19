@@ -864,13 +864,9 @@ function getEventColor(type) {
   return colors[type] || '#6b7280';
 }
 
-// 導航按鈕
-const prevMonthBtn = document.getElementById('prev-month');
-const nextMonthBtn = document.getElementById('next-month');
-const goTodayBtn = document.getElementById('go-today');
-const showCalendarBtn = document.getElementById('show-calendar');
-const calendarScreen = document.getElementById('screen-calendar');
-const calendarBack = document.getElementById('calendar-back');
+// 導航按鈕（已在上面宣告）
+// prevMonthBtn, nextMonthBtn, goTodayBtn, showCalendarBtn
+// calendarScreen, calendarBack 等已宣告在變量初始化區段
 
 prevMonthBtn.addEventListener('click', () => {
   currentMonth.setMonth(currentMonth.getMonth() - 1);
