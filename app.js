@@ -930,8 +930,11 @@ goTodayBtn.addEventListener('click', () => {
 });
 
 showCalendarBtn.addEventListener('click', () => {
-  currentMonth = new Date();
-  selectedDate = new Date();
+  // 如果尚未初始化或已過期，使用智能計算的月份
+  if (!currentMonth) {
+    currentMonth = new Date();
+  }
+  selectedDate = currentMonth;
   renderCalendar();
   updateSelectedDateDetails();
   showScreen(calendarScreen, welcomeScreen);
