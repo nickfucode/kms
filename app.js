@@ -22,6 +22,18 @@ const calendarGrid = document.getElementById('calendar-grid');
 const selectedDateTitle = document.getElementById('selected-date-title');
 const selectedEvents = document.getElementById('selected-events');
 
+// 初始化檢查
+console.log('Checking DOM elements:');
+console.log('- loginScreen:', loginScreen ? '✅' : '❌');
+console.log('- welcomeScreen:', welcomeScreen ? '✅' : '❌');
+console.log('- loginForm:', loginForm ? '✅' : '❌');
+console.log('- usernameInput:', usernameInput ? '✅' : '❌');
+console.log('- passwordInput:', passwordInput ? '✅' : '❌');
+
+if (!loginForm || !usernameInput || !passwordInput || !loginScreen || !welcomeScreen) {
+  console.error('❌ Critical elements missing! Check HTML structure.');
+}
+
 function showScreen(next, current) {
   current.classList.add('screen--leaving');
   next.classList.add('screen--active');
