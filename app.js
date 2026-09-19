@@ -641,95 +641,240 @@ function updateDateTime() {
 setInterval(updateDateTime, 1000); // 每秒更新
 updateDateTime(); // 立即執行一次
 
-/* ===== 行事曆 ===== */
-function formatDate(dateStr) {
-  const [year, month, day] = dateStr.split('-').map(Number);
-  return `${month}/${day}`;
-}
+/* ===== 月曆 ===== */
+let currentMonth = new Date();
+let selectedDate = null;
 
-function getEventIcon(type) {
-  const icons = {
-    important: '🔴',
-    exam: '📝',
-    holiday: '🏖️',
-    event: '🎉',
-    sport: '🏆',
-    medical: '💉',
-    meeting: '👨‍👩‍👧‍👦',
-    learning: '📚',
-    notice: '📢',
-    period: '📅',
-    note: '📌'
-  };
-  return icons[type] || '📌';
-}
-
-function renderCalendarEvents() {
-  const today = new Date();
-  const todayStr = today.toISOString().split('T')[0];
+function renderCalendar() {
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth();
   
-  // 篩選今日及將來的活動
-  const upcomingEvents = CALENDAR_EVENTS.filter(event => {
+  // 更新月份標題
+  const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+  document.getElementById('calendar-current-month').textContent = `${year}年 ${monthNames[month]}`;
+  
+  // 計算月份的第一天和總天數
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const totalDays = lastDay.getDate();
+  const startDayOfWeek = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
+  
+  // 清除現有網格
+  const grid = document.getElementById('calendar-grid');
+  grid.innerHTML = '';
+  
+  // 獲取當月的所有事件
+  const monthEvents = getEventsForMonth(year, month);
+  
+  // 填充空白格子（上個月）
+  const prevMonthLastDay = new Date(year, month, 0).getDate();
+  for (let i = startDayOfWeek - 1; i >= 0; i--) {
+    const dayCell = createDayCell(null, true);
+    grid.appendChild(dayCell);
+  }
+  
+  // 填充當前月的日期
+  const now = new Date();
+  const isCurrentMonth = now.getMonth() === month && now.getFullYear() === year;
+  
+  for (let day = 1; day <= totalDays; day++) {
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const cellDate = new Date(year, month, day);
+    const isToday = isCurrentMonth && day === now.getDate();
+    
+    const events = monthEvents.filter(e => {
+      if (e.range) {
+        const [start, end] = e.range;
+        return dateStr >= start && dateStr <= end;
+      }
+      return e.date === dateStr;
+    });
+    
+    const cell = createDayCell(day, false, events, isToday);
+    grid.appendChild(cell);
+  }
+  
+  // 填充下一格的空白
+  const remainingCells = 42 - (startDayOfWeek + totalDays); // 6 rows * 7 days = 42
+  for (let i = 0; i < remainingCells; i++) {
+    const dayCell = createDayCell(null, true);
+    grid.appendChild(dayCell);
+  }
+}
+
+function createDayCell(day, isEmpty, events = [], isToday = false) {
+  const cell = document.createElement('div');
+  cell.className = 'calendar-day';
+  
+  if (isEmpty) {
+    cell.classList.add('empty');
+    return cell;
+  }
+  
+  if (isToday) {
+    cell.classList.add('today');
+  }
+  
+  // 數字
+  const dayNum = document.createElement('span');
+  dayNum.className = 'day-number';
+  dayNum.textContent = day;
+  if (isToday) {
+    dayNum.style.fontWeight = 'bold';
+  }
+  cell.appendChild(dayNum);
+  
+  // 事件標記
+  if (events.length > 0) {
+    const icons = [];
+    events.forEach(event => {
+      icons.push(getEventIcon(event.type));
+    });
+    
+    const eventContainer = document.createElement('div');
+    eventContainer.className = 'day-events';
+    eventContainer.title = events.map(e => e.title).join('; ');
+    
+    icons.slice(0, 5).forEach(icon => { // 最多顯示 5 個圖示
+      const iconSpan = document.createElement('span');
+      iconSpan.textContent = icon;
+      iconSpan.className = 'event-chip';
+      eventContainer.appendChild(iconSpan);
+    });
+    
+    if (events.length > 5) {
+      const more = document.createElement('span');
+      more.textContent = '+' + (events.length - 5);
+      more.className = 'event-chip event-chip-more';
+      eventContainer.appendChild(more);
+    }
+    
+    cell.appendChild(eventContainer);
+  }
+  
+  // 點擊事件
+  cell.addEventListener('click', () => selectDate(day));
+  
+  return cell;
+}
+
+function getEventsForMonth(year, month) {
+  return CALENDAR_EVENTS.filter(event => {
     if (event.range) {
       const startDate = new Date(event.range[0]);
       const endDate = new Date(event.range[1]);
-      return today >= startDate && today <= endDate;
+      return (startDate.getFullYear() === year && startDate.getMonth() === month) ||
+             (endDate.getFullYear() === year && endDate.getMonth() === month) ||
+             (startDate < currentMonth && endDate > currentMonth);
     } else {
       const eventDate = new Date(event.date);
-      return today >= eventDate;
+      return eventDate.getFullYear() === year && eventDate.getMonth() === month;
     }
-  }).sort((a, b) => {
-    if (a.range) {
-      return new Date(a.range[0]) - new Date(b.range?.[0] || b.date);
+  });
+}
+
+function selectDate(day) {
+  selectedDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+  updateSelectedDateDetails();
+}
+
+function updateSelectedDateDetails() {
+  if (!selectedDate) return;
+  
+  const title = document.getElementById('selected-date-title');
+  const eventsList = document.getElementById('selected-events');
+  
+  const year = selectedDate.getFullYear();
+  const month = selectedDate.getMonth() + 1;
+  const day = selectedDate.getDate();
+  title.textContent = `${year}年${month}月${day}日`; 
+  
+  const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  
+  const allEvents = CALENDAR_EVENTS.filter(event => {
+    if (event.range) {
+      return dateStr >= event.range[0] && dateStr <= event.range[1];
     }
-    return new Date(a.date) - new Date(b.date);
+    return event.date === dateStr;
   });
   
+  if (allEvents.length === 0) {
+    eventsList.innerHTML = '<p class="no-today-events">今天沒有安排任何活動。</p>';
+    return;
+  }
+  
   let html = '';
-  upcomingEvents.forEach(event => {
-    const isRange = !!event.range;
-    const startDate = isRange ? event.range[0] : event.date;
-    const endDate = isRange ? event.range[1] : event.date;
-    const start = new Date(startDate);
-    const end = isRange ? new Date(endDate) : start;
-    
-    const isToday = isRange 
-      ? today >= start && today <= end
-      : today >= start;
-    
-    const titleColor = isToday ? '#ef4444' : '#374151';
-    const bgStyle = isToday ? 'background: #fee2e2;' : '';
-    const borderStyle = isToday ? 'border-left: 4px solid #ef4444;' : 'border-left: 4px solid #6b7280;';
+  allEvents.forEach(event => {
+    const typeColor = getEventColor(event.type);
+    const icon = getEventIcon(event.type);
     
     html += `
-      <div class="calendar-event" style="${bgStyle} ${borderStyle}">
-        <div class="calendar-date">
-          <span class="date-icon">${getEventIcon(event.type)}</span>
-          <span class="date-range">
-            ${isRange ? `${formatDate(start.toISOString().split('T')[0])}-${formatDate(end.toISOString().split('T')[0])}` : formatDate(end.toISOString().split('T')[0])}
-          </span>
+      <div class="event-item" style="border-left: 3px solid ${typeColor};">
+        <div class="event-header">
+          <span class="event-icon">${icon}</span>
+          <h4 class="event-name" style="color: ${typeColor};">${event.title}</h4>
         </div>
-        <div class="calendar-details">
-          <div class="event-title" style="color: ${titleColor};">${event.title}</div>
-          ${event.subtitle ? `<div class="event-subtitle">${event.subtitle}</div>` : ''}
-          ${event.note ? `<div class="event-note">⚠️ ${event.note}</div>` : ''}
-        </div>
+        ${event.subtitle ? `<p class="event-subtitle">${event.subtitle}</p>` : ''}
+        ${event.note ? `<p class="event-note">⚠️ ${event.note}</p>` : ''}
       </div>
     `;
   });
   
-  if (upcomingEvents.length === 0) {
-    html = '<p class="no-events">沒有更多活動了！</p>';
-  }
-  
-  calendarList.innerHTML = html;
+  eventsList.innerHTML = html;
 }
 
+function getEventColor(type) {
+  const colors = {
+    important: '#ef4444',
+    exam: '#f97316',
+    holiday: '#22c55e',
+    event: '#a855f7',
+    sport: '#06b6d4',
+    medical: '#ec4899',
+    meeting: '#8b5cf6',
+    learning: '#14b8a6',
+    notice: '#f59e0b',
+    period: '#6366f1'
+  };
+  return colors[type] || '#6b7280';
+}
+
+// 導航按鈕
+const prevMonthBtn = document.getElementById('prev-month');
+const nextMonthBtn = document.getElementById('next-month');
+const goTodayBtn = document.getElementById('go-today');
+const showCalendarBtn = document.getElementById('show-calendar');
+const calendarScreen = document.getElementById('screen-calendar');
+const calendarBack = document.getElementById('calendar-back');
+
+prevMonthBtn.addEventListener('click', () => {
+  currentMonth.setMonth(currentMonth.getMonth() - 1);
+  renderCalendar();
+});
+
+nextMonthBtn.addEventListener('click', () => {
+  currentMonth.setMonth(currentMonth.getMonth() + 1);
+  renderCalendar();
+});
+
+goTodayBtn.addEventListener('click', () => {
+  currentMonth = new Date();
+  selectedDate = new Date();
+  renderCalendar();
+  updateSelectedDateDetails();
+});
+
 showCalendarBtn.addEventListener('click', () => {
-  renderCalendarEvents();
+  currentMonth = new Date();
+  selectedDate = new Date();
+  renderCalendar();
+  updateSelectedDateDetails();
   showScreen(calendarScreen, welcomeScreen);
 });
 
 calendarBack.addEventListener('click', () => {
   showScreen(welcomeScreen, calendarScreen);
 });
+
+// 初始化
+renderCalendar();
