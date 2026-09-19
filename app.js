@@ -6,8 +6,6 @@ const loginForm = document.getElementById('login-form');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
 const togglePassword = document.getElementById('toggle-password');
-const welcomeName = document.getElementById('welcome-name');
-const welcomeAvatar = document.getElementById('welcome-avatar');
 const logoutButton = document.getElementById('logout');
 const datetimeDate = document.getElementById('datetime-date');
 const datetimeTime = document.getElementById('datetime-time');
@@ -49,8 +47,6 @@ loginForm.addEventListener('submit', (event) => {
   try {
     console.log('Login form submitted');
     const name = usernameInput.value.trim() || '使用者';
-    welcomeName.textContent = name;
-    welcomeAvatar.textContent = name.charAt(0);
     console.log('Switching to welcome screen');
     showScreen(welcomeScreen, loginScreen);
     
