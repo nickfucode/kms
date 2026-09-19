@@ -14,7 +14,13 @@ const datetimeTime = document.getElementById('datetime-time');
 const showCalendarBtn = document.getElementById('show-calendar');
 const calendarScreen = document.getElementById('screen-calendar');
 const calendarBack = document.getElementById('calendar-back');
-const calendarList = document.getElementById('calendar-list');
+const prevMonthBtn = document.getElementById('prev-month');
+const nextMonthBtn = document.getElementById('next-month');
+const goTodayBtn = document.getElementById('go-today');
+const calendarCurrentMonth = document.getElementById('calendar-current-month');
+const calendarGrid = document.getElementById('calendar-grid');
+const selectedDateTitle = document.getElementById('selected-date-title');
+const selectedEvents = document.getElementById('selected-events');
 
 function showScreen(next, current) {
   current.classList.add('screen--leaving');
@@ -28,10 +34,17 @@ function showScreen(next, current) {
 
 loginForm.addEventListener('submit', (event) => {
   event.preventDefault();
-  const name = usernameInput.value.trim() || '使用者';
-  welcomeName.textContent = name;
-  welcomeAvatar.textContent = name.charAt(0);
-  showScreen(welcomeScreen, loginScreen);
+  try {
+    console.log('Login form submitted');
+    const name = usernameInput.value.trim() || '使用者';
+    welcomeName.textContent = name;
+    welcomeAvatar.textContent = name.charAt(0);
+    console.log('Switching to welcome screen');
+    showScreen(welcomeScreen, loginScreen);
+  } catch (err) {
+    console.error('Login error:', err);
+    alert('登入時發生錯誤：' + err.message);
+  }
 });
 
 logoutButton.addEventListener('click', () => {
